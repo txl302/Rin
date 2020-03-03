@@ -1,11 +1,19 @@
 import socket
 
+import json
+
 ss = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sr = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-woody = ("192.168.1.87", 9901)
+Woody_ip = '192.168.1.156'
+Woody_rece_port = 9902
 
-sr.bind(woody)
+Woody = ('192.168.1.156', 9902)
+Rin = ("192.168.1.80", 9901)
+
+local = ('127.0.0.1', 9999)
+
+sr.bind(Rin)
  
 def get_local_ip():
     try:
@@ -17,10 +25,12 @@ def get_local_ip():
 
     return ip
 
-def sendto_woody(data):
-    ss.sendto(data, woody)
+def sendto_Woody(data):
+    data = json.dumps(data)
+    #data.encode()
+    ss.sendto(data.encode(), Woody)
 
-def rece_woody(data):
+def rece_Woody(data):
     data,addr = sr.recvfrom(64000)
 
 

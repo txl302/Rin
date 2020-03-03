@@ -4,23 +4,35 @@ from time import sleep
 import cv2
 
 from Rin_motion import Rin_motion as Rm
-from Rin_network import Rin_network as Rn
+#from Rin_network import Rin_network as Rn
 
 import time
+
+import threading
+
+import socket
 
 current_pos_1 = 90
 current_pos_2 = 90
 
 init_pos = [90, 90]
 
+data = [0, 0]
+
+global flag
+
+global a
+global b
+
+flag_s = 0
+flag_n = 0
+
 
 def main():
+    pass
 
-    Rm.init()
 
-    current_pos_1 = 90
-    current_pos_2 = 90
-
+def vision():
 
     camera = picamera.PiCamera()
 
@@ -34,6 +46,11 @@ def main():
     rectangleColor = (0,165,255) 
 
     sleep(0.1)
+
+    global a
+    global b
+
+    global flag_s
 
     for frame in camera.capture_continuous(rawCapture,format='bgr',use_video_port=True):
         image = frame.array
@@ -61,48 +78,52 @@ def main():
             a = x+w/2 - res_w/2
             b = y+h/2 - res_h/2
 
-            Rn.sendto_woody([a ,b])
-                
-            if(a < -30):
-                current_pos_1 = current_pos_1 + 4
-                Rm.move_to(1, current_pos_1)
-            if(a > 30):
-                current_pos_1 = current_pos_1 - 4
-                Rm.move_to(1, current_pos_1)
-
-            if(b < -30):
-                current_pos_2 = current_pos_2 + 4
-                Rm.move_to(2, current_pos_2)
-            if(b > 30):
-                current_pos_2 = current_pos_2 - 4
-                Rm.move_to(2, current_pos_2)
-        else:
-            Rn.rece_woody(data)
-            a = data[0]
-            b = data[1]
-
-            if(a < -30):
-                current_pos_1 = current_pos_1 + 4
-                Rm.move_to(1, current_pos_1)
-            if(a > 30):
-                current_pos_1 = current_pos_1 - 4
-                Rm.move_to(1, current_pos_1)
-
-            if(b < -30):
-                current_pos_2 = current_pos_2 + 4
-                Rm.move_to(2, current_pos_2)
-            if(b > 30):
-                current_pos_2 = current_pos_2 - 4
-                Rm.move_to(2, current_pos_2)
+            flag_s = 1
             
-     
-        image = cv2.resize(image, (640,480))
         cv2.imshow('img',image)
           
         rawCapture.truncate(0)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        if cv2.waitKey(20) & 0xFF == ord('q'):
             break
 
-if __name__ == "__main__":
-    main()
 
+def motion():
+    Rm.init()
+
+    current_pos_1 = 90
+    current_pos_2 = 90
+
+    global a
+    global b
+
+    global flag_s
+
+    while True:
+
+        if(flag_s == 1):
+            
+            if(a < -30):
+                current_pos_1 = current_pos_1 + 4
+                Rm.move_to(1, current_pos_1)
+            if(a > 30):
+                current_pos_1 = current_pos_1 - 4
+                Rm.move_to(1, current_pos_1)
+
+            if(b < -30):
+                current_pos_2 = current_pos_2 + 4
+                Rm.move_to(2, current_pos_2)
+            if(b > 30):
+                current_pos_2 = current_pos_2 - 4
+                Rm.move_to(2, current_pos_2)
+
+        flag_s = 0
+        time.sleep(0.02)
+
+
+if __name__ == "__main__":
+
+    thre_v = threading.Thread(target = vision)
+    thre_m = threading.Thread(target = motion)
+
+    thre_v.start()
+    thre_m.start()
