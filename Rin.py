@@ -4,7 +4,7 @@ from time import sleep
 import cv2
 
 from Rin_motion import Rin_motion as Rm
-#from Rin_network import Rin_network as Rn
+from Rin_network import Rin_network as Rn
 
 import time
 
@@ -19,13 +19,11 @@ init_pos = [90, 90]
 
 data = [0, 0]
 
-global flag
-
-global a
-global b
-
 flag_s = 0
 flag_n = 0
+
+a = 0
+b = 0
 
 
 def main():
@@ -101,6 +99,7 @@ def motion():
     while True:
 
         if(flag_s == 1):
+            #print(a,b)
             
             if(a < -30):
                 current_pos_1 = current_pos_1 + 4
@@ -119,11 +118,34 @@ def motion():
         flag_s = 0
         time.sleep(0.02)
 
+def network_s():
+    global flag_n
+
+    while True:
+
+        data = Rn.rece()
+
+def network_r():
+    global flag_n
+
+    global a
+    global b
+    
+    while True:
+        while(flag_s == 1):
+            data = [a,b]
+            Rn.sendto(data)
+            print(data)
+
 
 if __name__ == "__main__":
 
     thre_v = threading.Thread(target = vision)
     thre_m = threading.Thread(target = motion)
+    thre_ns = threading.Thread(target = network_s)
+    thre_nr = threading.Thread(target = network_r)
 
     thre_v.start()
     thre_m.start()
+    thre_ns.start()
+    thre_nr.start()

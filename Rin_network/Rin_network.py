@@ -2,38 +2,30 @@ import socket
 
 import json
 
-ss = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sr = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-Woody_ip = '192.168.1.156'
-Woody_rece_port = 9902
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 Woody = ('192.168.1.156', 9902)
-Rin = ("192.168.1.80", 9901)
+Rin = ("192.168.1.80", 9902)
 
-local = ('127.0.0.1', 9999)
-
-sr.bind(Rin)
+s.bind(Rin)
  
 def get_local_ip():
     try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(('8.8.8.8', 80))
-        ip = s.getsockname()[0]
+        s_t = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s_t.connect(('8.8.8.8', 80))
+        ip = s_t.getsockname()[0]
     finally:
-        s.close()
+        s_t.close()
 
     return ip
 
-def sendto_Woody(data):
+def sendto(data):
     data = json.dumps(data)
     #data.encode()
-    ss.sendto(data.encode(), Woody)
+    s.sendto(data.encode(), Woody)
 
-def rece_Woody(data):
-    data,addr = sr.recvfrom(64000)
-
-
+def rece():
+    data,addr = s.recvfrom(64000)
 
 if __name__ == '__main__':
 	print(get_local_ip())
