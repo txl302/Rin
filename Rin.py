@@ -25,6 +25,8 @@ flag_n = 0
 a = 0
 b = 0
 
+a_n = 0
+b_n = 0
 
 def main():
     pass
@@ -95,11 +97,15 @@ def motion():
     global b
 
     global flag_s
+    global flag_n
+
+    global a_n
+    global b_n
 
     while True:
+        #print(flag_s, flag_n, flag_s == 0, flag_n == 1, (flag_s == 0) & (flag_n == 1))
 
         if(flag_s == 1):
-            #print(a,b)
             
             if(a < -30):
                 current_pos_1 = current_pos_1 + 4
@@ -115,17 +121,52 @@ def motion():
                 current_pos_2 = current_pos_2 - 4
                 Rm.move_to(2, current_pos_2)
 
-        flag_s = 0
+            flag_s = 0
+            
+        if((flag_s == 0) & (flag_n == 1)):
+
+            print('network')
+
+            if(a_n < -30):
+                current_pos_1 = current_pos_1 + 4
+                Rm.move_to(1, current_pos_1)
+            if(a_n > 30):
+                current_pos_1 = current_pos_1 - 4
+                Rm.move_to(1, current_pos_1)
+
+            if(b_n < -30):
+                current_pos_2 = current_pos_2 + 4
+                Rm.move_to(2, current_pos_2)
+            if(b_n > 30):
+                current_pos_2 = current_pos_2 - 4
+                Rm.move_to(2, current_pos_2)
+
+            flag_n = 0
+            
+            
+        
         time.sleep(0.02)
 
-def network_s():
+def network_r():
     global flag_n
+
+    global a_n
+    global b_n
 
     while True:
 
         data = Rn.rece()
 
-def network_r():
+        flag_n = 1
+
+        a_n = data[0]
+        b_n = data[1]
+
+        print(a_n, b_n)
+
+        time.sleep(0.02)
+
+def network_s():
     global flag_n
 
     global a
@@ -135,7 +176,9 @@ def network_r():
         while(flag_s == 1):
             data = [a,b]
             Rn.sendto(data)
-            print(data)
+
+            time.sleep(0.02)
+
 
 
 if __name__ == "__main__":

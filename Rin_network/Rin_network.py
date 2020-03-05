@@ -25,7 +25,9 @@ def sendto(data):
     s.sendto(data.encode(), Woody)
 
 def rece():
-    data,addr = s.recvfrom(64000)
+    raw_data,addr = s.recvfrom(64000)
+    data = json.loads(raw_data.decode())
+    return data
 
 if __name__ == '__main__':
 	print(get_local_ip())
