@@ -13,7 +13,7 @@ EMPTY = ' '
 class Face(object):
     def __init__(self):
         self.height = 32
-        self.width = 40
+        self.width = 80
         self.rows = []
         for _ in range(self.height):
             self.rows.append([SHOW] * self.width)
@@ -24,7 +24,7 @@ class Face(object):
             if (i<6 or i>25):
                 self.rows.append([EMPTY] * self.width)
             else:
-                self.rows.append([EMPTY]*6 + [SHOW]*8 + [EMPTY]*12 + [SHOW]*8 + [EMPTY]*6)
+                self.rows.append([EMPTY]*12 + [SHOW]*16 + [EMPTY]*24 + [SHOW]*16 + [EMPTY]*12)
 
 
 
@@ -43,7 +43,7 @@ class Face(object):
 def test():
     g = Face()
     g.neutral()
-    clear = '\x1b[{}A\x1b[{}D'.format(40,32)
+    clear = '\x1b[{}A\x1b[{}D'.format(80,32)
     while True:
         print(clear)
         print(g)
