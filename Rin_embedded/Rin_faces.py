@@ -26,6 +26,14 @@ class Face(object):
             else:
                 self.rows.append([EMPTY]*12 + [SHOW]*16 + [EMPTY]*24 + [SHOW]*16 + [EMPTY]*12)
 
+    def twinkle(self):
+        self.rows = []
+        for i in range(self.height):
+            if (i<15 or i>16):
+                self.rows.append([EMPTY] * self.width)
+            else:
+                self.rows.append([EMPTY]*12 + [SHOW]*16 + [EMPTY]*24 + [SHOW]*16 + [EMPTY]*12)
+
 
 
     def __str__(self):
@@ -42,12 +50,22 @@ class Face(object):
 
 def test():
     g = Face()
-    g.neutral()
     clear = '\x1b[{}A\x1b[{}D'.format(80,32)
     while True:
+
+        g.neutral()
+
+        print(clear)
+        print(g)
+        time.sleep(3)
+
+        g.twinkle()
+
         print(clear)
         print(g)
         time.sleep(.1)
+
+
     
 
 
