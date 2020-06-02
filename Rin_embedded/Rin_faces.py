@@ -5,7 +5,7 @@ import random
 from collections import namedtuple
 
 
-SHOW = '\033[36m#'
+SHOW = '\033[32m#'
 EMPTY = ' '
 
 
