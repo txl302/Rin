@@ -88,7 +88,7 @@ def vision():
             
             n.move_eye(-round(int(a)/12), round(int(b)/8))
 
-        cv2.imshow('img',image)
+        #cv2.imshow('img',image)
 
         n.print_face()
           
