@@ -6,6 +6,8 @@ import cv2
 from Rin_motion import Rin_motion as Rm
 from Rin_network import Rin_network as Rn
 
+from Rin_embedded import Rin_faces as Rf
+
 import time
 
 import threading
@@ -52,6 +54,8 @@ def vision():
 
     global flag_s
 
+    n = Rf.Neutual()
+
     for frame in camera.capture_continuous(rawCapture,format='bgr',use_video_port=True):
         image = frame.array
 
@@ -80,7 +84,11 @@ def vision():
 
             flag_s = 1
             
+            n.move_eye(a, b)
+
         cv2.imshow('img',image)
+
+        n.print_face()
           
         rawCapture.truncate(0)
         if cv2.waitKey(20) & 0xFF == ord('q'):
