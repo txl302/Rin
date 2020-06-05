@@ -54,7 +54,7 @@ def vision():
 
     global flag_s
 
-    n = Rf.Neutual()
+    n = Rf.Neutral()
 
     for frame in camera.capture_continuous(rawCapture,format='bgr',use_video_port=True):
         image = frame.array
@@ -83,8 +83,10 @@ def vision():
             b = y+h/2 - res_h/2
 
             flag_s = 1
+
+            print(round(a/12), round(b/8))
             
-            n.move_eye(a, b)
+            n.move_eye(-round(int(a)/12), round(int(b)/8))
 
         cv2.imshow('img',image)
 
