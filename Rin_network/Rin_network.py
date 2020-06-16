@@ -8,6 +8,11 @@ Woody = ('192.168.1.156', 9902)
 Rin = ("192.168.1.80", 9902)
 
 s.bind(Rin)
+
+class Face(object):
+
+    def __init__(self):
+        self.ip = get_local_ip()
  
 def get_local_ip():
     try:

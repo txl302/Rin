@@ -68,8 +68,8 @@ class Happy(Face):
             if ((i+1)<=(self.height/2-self.eye_height/2+self.eye_off[1]) or (i+1)>(self.height/2 + self.eye_height/2+self.eye_off[1])):
                 self.rows.append([EMPTY] * self.width)
             else:
-                #self.rows.append([EMPTY]*round(self.width/4-self.eye_width/2+self.eye_off[0]) + [SHOW]*self.eye_width + [EMPTY]*round(self.width/2-self.eye_width) + [SHOW]*self.eye_width + [EMPTY]*round(self.width/4-self.eye_width/2-self.eye_off[0]))
-                self.rows.append([EMPTY])
+                side = round(self.width/4-self.eye_width/2+0.6*(self.width/self.height)*(i-self.height/2+self.eye_height/2))
+                self.rows.append([EMPTY]*side + [SHOW]*2 + [EMPTY]*(self.width-side*2-4) + [SHOW]*2 + [EMPTY]*side)
         
         clear = '\x1b[{}A\x1b[{}D'.format(self.height,self.width) 
         print(clear)
@@ -172,6 +172,43 @@ class Sad(Face):
         return output  
 
 
+class Happy(Face):
+
+    def print_face(self):
+        self.rows = []
+        for i in range(self.height):
+            if ((i+1)<=(self.height/2-self.eye_height/2+self.eye_off[1]) or (i+1)>(self.height/2 + self.eye_height/2+self.eye_off[1])):
+                self.rows.append([EMPTY] * self.width)
+            else:
+                side = round(self.width/4 - (self.eye_width/2)*(i-(self.height-self.eye_height)/2)*(self.width-self.eye_width)/2/self.eye_height)
+                inner = round((self.eye_width/2)*(i-(self.height-self.eye_height)/2)*(self.width-self.eye_width)/2/self.eye_height)
+                print(side, inner)
+                self.rows.append([EMPTY]*side + [SHOW]*2 + [EMPTY]*inner + [SHOW])
+        
+        clear = '\x1b[{}A\x1b[{}D'.format(self.height,self.width) 
+        #print(clear)
+        #print(self)
+        time.sleep(.1)
+    
+    def normal(self):
+        self.eye_height = 12
+        self.eye_width = 18
+        self.eye_off = [0, 0]
+        self.print_face()
+
+    def move_eye(self, x, y):
+        self.eye_off[0] = x
+        self.eye_off[1] = y
+        self.print_face()
+
+    def __str__(self):
+        output = ''
+        for row in self.rows:
+            for cell in row:
+                output += cell
+            output += '\n'
+        return output 
+
 
 def neutral_test():
     os.system('clear')
@@ -213,6 +250,19 @@ def sad_test():
         s.move_eye(2, -2)
         time.sleep(2)
         s.normal()
+        time.sleep(2)
+
+def happy_test():
+    os.system('clear')
+    h = Happy()
+    while True:
+        h.normal()
+        time.sleep(2)
+        h.move_eye(-2, -2)
+        time.sleep(2)
+        h.move_eye(2, -2)
+        time.sleep(2)
+        h.normal()
         time.sleep(2)
 
 def demo():
@@ -257,4 +307,6 @@ def demo():
 
 
 if __name__ == '__main__':
-    demo()
+    #demo()
+
+    happy_test()
