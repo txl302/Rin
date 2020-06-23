@@ -30,18 +30,12 @@ b = 0
 a_n = 0
 b_n = 0
 
-class Robot(object):
-
-    def __init__(self, rob_id, rob_ip):
-        self.rob_id = rob_id
-        self.rob_ip = rob_ip
-
-class Rin(Robot):
+def main():
     pass
 
 
+def vision():
 
-def vision_send():
     camera = picamera.PiCamera()
 
     res_w = 320
@@ -50,48 +44,58 @@ def vision_send():
     camera.resolution = (res_w, res_h)
     rawCapture = picamera.array.PiRGBArray(camera)
 
+    face_cascade = cv2.CascadeClassifier('Rin_vision/haarcascade_frontalface_alt.xml')
+    rectangleColor = (0,165,255) 
+
     sleep(0.1)
 
+    global a
+    global b
+
+    global flag_s
+
+    n = Rf.Neutral()
 
     for frame in camera.capture_continuous(rawCapture,format='bgr',use_video_port=True):
         image = frame.array
 
         cv2.flip(image, -1, image)
 
-        ret, img = cap.read()
-     
-        cv2.imshow('img',img)
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+        maxArea = 0  
+        x = 0  
+        y = 0  
+        w = 0  
+        h = 0
 
-        result, imgencode = cv2.imencode('.jpg',img)
-        data_encode = np.array(imgencode)
-        str_encode = data_encode.tostring()
-        
-        Rn.sendto_Server_img(str_encode)
-        
+        for (_x,_y,_w,_h) in faces:
+
+            if _w*_h > maxArea:
+                x = _x
+                y = _y
+                w = _w
+                h = _h
+                maxArea = w*h
+        if maxArea > 0:
+            cv2.rectangle(image,(x,y),(x+w,y+h),rectangleColor,4)
+            a = x+w/2 - res_w/2
+            b = y+h/2 - res_h/2
+
+            flag_s = 1
+
+            print(round(a/12), round(b/8))
+            
+            n.move_eye(-round(int(a)/12), round(int(b)/8))
+
         #cv2.imshow('img',image)
+
+        n.print_face()
           
         rawCapture.truncate(0)
         if cv2.waitKey(20) & 0xFF == ord('q'):
             break
 
-
-def server_test():
-    print('hello!')
-    while True:
-
-        ret, img = cap.read()
-     
-        cv2.imshow('img',img)
-
-        result, imgencode = cv2.imencode('.jpg',img)
-        data_encode = np.array(imgencode)
-        str_encode = data_encode.tostring()
-        
-        Wn.sendto_Server_img(str_encode)
-        
-        k = cv2.waitKey(50) & 0xff
-        if k == 27:
-            break
 
 def motion():
     Rm.init()
@@ -186,11 +190,9 @@ def network_s():
             time.sleep(0.02)
 
 
-def test():
-    vision_send()
 
+if __name__ == "__main__":
 
-def demo():
     thre_v = threading.Thread(target = vision)
     thre_m = threading.Thread(target = motion)
     thre_ns = threading.Thread(target = network_s)
@@ -200,10 +202,3 @@ def demo():
     thre_m.start()
     thre_ns.start()
     thre_nr.start()
-
-
-
-
-
-if __name__ == "__main__":
-
