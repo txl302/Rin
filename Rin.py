@@ -3,6 +3,8 @@ import picamera.array
 from time import sleep
 import cv2
 
+import numpy as np
+
 from Rin_motion import Rin_motion as Rm
 from Rin_network import Rin_network as Rn
 
@@ -58,17 +60,13 @@ def vision_send():
 
         cv2.flip(image, -1, image)
 
-        ret, img = cap.read()
-     
-        cv2.imshow('img',img)
-
-        result, imgencode = cv2.imencode('.jpg',img)
+        result, imgencode = cv2.imencode('.jpg',image)
         data_encode = np.array(imgencode)
         str_encode = data_encode.tostring()
         
         Rn.sendto_Server_img(str_encode)
         
-        #cv2.imshow('img',image)
+        cv2.imshow('img',image)
           
         rawCapture.truncate(0)
         if cv2.waitKey(20) & 0xFF == ord('q'):
@@ -206,4 +204,5 @@ def demo():
 
 
 if __name__ == "__main__":
+    test()
 
