@@ -72,6 +72,23 @@ def vision_send():
         if cv2.waitKey(20) & 0xFF == ord('q'):
             break
 
+def rece_motion():
+
+    n = Rf.Neutral()
+
+    while True:
+
+        command_rin = Rn.rece()
+
+        a = command_rin[0]
+        b = command_rin[1]
+
+        if (a != 0 & b != 0):
+            n.move_eye(-round(int(a)/12), round(int(b)/8))
+            n.print_face()
+
+        time.sleep(0.1)
+
 
 def server_test():
     print('hello!')
