@@ -66,7 +66,7 @@ def vision_send():
         
         Rn.sendto_Server_img(str_encode)
         
-        cv2.imshow('img',image)
+        #cv2.imshow('img',image)
           
         rawCapture.truncate(0)
         if cv2.waitKey(20) & 0xFF == ord('q'):
@@ -77,15 +77,17 @@ def rece_motion():
     n = Rf.Neutral()
 
     while True:
+        print('a')
 
         command_rin = Rn.rece()
+
+        print('b')
 
         a = command_rin[0]
         b = command_rin[1]
 
-        if (a != 0 & b != 0):
-            n.move_eye(-round(int(a)/12), round(int(b)/8))
-            n.print_face()
+        n.move_eye(-round(int(a)/12), round(int(b)/8))
+        n.print_face()
 
         time.sleep(0.1)
 
@@ -202,7 +204,12 @@ def network_s():
 
 
 def test():
-    vision_send()
+
+    thre_v = threading.Thread(target = vision_send)
+    thre_m = threading.Thread(target = rece_motion)
+
+    thre_v.start()
+    thre_m.start()
 
 
 def demo():
@@ -222,4 +229,5 @@ def demo():
 
 if __name__ == "__main__":
     test()
+    #vision_send()
 

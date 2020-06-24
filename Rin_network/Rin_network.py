@@ -8,7 +8,7 @@ Woody = ('192.168.1.156', 9902)
 Rin = ("192.168.1.80", 9902)
 
 Server_ip = '192.168.1.83'
-Server_video_port_rin = 9902
+Server_video_port_rin = 9901
 
 Server_video_woody = (Server_ip, Server_video_port_rin)
 
